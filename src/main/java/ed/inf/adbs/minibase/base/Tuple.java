@@ -16,9 +16,15 @@ public class Tuple {
         }
     }
 
+    public Tuple(Object[] values) {
+        this.values = values;
+    }
+
     public Object get(int index) {
         return values[index];
     }
+
+
 
     public String toString() {
         StringBuilder sb = new StringBuilder("(");

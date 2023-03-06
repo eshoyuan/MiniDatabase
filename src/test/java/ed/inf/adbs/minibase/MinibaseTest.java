@@ -111,6 +111,7 @@ public class MinibaseTest {
             System.out.println(t);
             t = scanOperator.getNextTuple();
         }
+        System.out.println("\n");
         scanOperator.reset();
         t = scanOperator.getNextTuple();
         while (t != null) {
@@ -132,6 +133,24 @@ public class MinibaseTest {
         while (t != null) {
             System.out.println(t);
             t = selectOperator.getNextTuple();
+        }
+    }
+
+    @Test
+    public void testProjectOperator() throws Exception {
+        Query query = QueryParser.parse(Paths.get("data/evaluation/input/query4.txt"));
+        ProjectOperator projectOperator = new ProjectOperator("data/evaluation/db/", query);
+        Tuple t = projectOperator.getNextTuple();
+        while (t != null) {
+            System.out.println(t);
+            t = projectOperator.getNextTuple();
+        }
+        System.out.println("\n");
+        projectOperator.reset();
+        t = projectOperator.getNextTuple();
+        while (t != null) {
+            System.out.println(t);
+            t = projectOperator.getNextTuple();
         }
     }
 }
