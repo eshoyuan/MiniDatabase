@@ -15,4 +15,13 @@ public class Variable extends Term {
     public String toString() {
         return name;
     }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other instanceof Variable) {
+            Variable otherVar = (Variable) other;
+            return name.equals(otherVar.name);
+        }
+        return false;
+    }
 }

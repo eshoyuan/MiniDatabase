@@ -1,14 +1,13 @@
 package ed.inf.adbs.minibase;
 
-import ed.inf.adbs.minibase.base.Query;
+import ed.inf.adbs.minibase.base.*;
 import ed.inf.adbs.minibase.parser.QueryParser;
 import org.junit.Test;
 
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.*;
 
+import static ed.inf.adbs.minibase.base.ComparisonOperator.EQ;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
@@ -16,7 +15,6 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -99,6 +97,48 @@ public class MinibaseTest {
             assertFalse(CQMinimizer.check_Homomorphism(query1, query2, new HashMap<String,String>()));
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testDatabaseCatalog() throws Exception {
+        DatabaseCatalog catalog = DatabaseCatalog.getInstance("data/evaluation/db/");
+        assertEquals(catalog.getRelationSchema("R"),new String[]{"int", "int", "string"});
+        assertEquals(catalog.getDataFile("R"),"data/evaluation/db/files/R.csv");
+
+    }
+
+    @Test
+    public void testScanOperator() throws Exception {
+        Query query = QueryParser.parse(Paths.get("data/evaluation/input/query1.txt"));
+
+        ScanOperator scanOperator = new ScanOperator("data/evaluation/db/", query);
+        Tuple t = scanOperator.getNextTuple();
+        while (t != null) {
+            System.out.println(t.toString());
+            t = scanOperator.getNextTuple();
+        }
+        scanOperator.reset();
+        t = scanOperator.getNextTuple();
+        while (t != null) {
+            System.out.println(t.toString());
+            t = scanOperator.getNextTuple();
+        }
+    }
+    @Test
+    public void testSelectOperator() throws Exception {
+        Query query = QueryParser.parse(Paths.get("data/evaluation/input/query4.txt"));
+        SelectOperator selectOperator = new SelectOperator("data/evaluation/db/", query);
+        Tuple t = selectOperator.getNextTuple();
+        while (t != null) {
+            System.out.println(t.toString());
+            t = selectOperator.getNextTuple();
+        }
+        selectOperator.reset();
+        t = selectOperator.getNextTuple();
+        while (t != null) {
+            System.out.println(t.toString());
+            t = selectOperator.getNextTuple();
         }
     }
 }

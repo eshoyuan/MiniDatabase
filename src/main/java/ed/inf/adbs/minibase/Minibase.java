@@ -22,6 +22,9 @@ public class Minibase {
         }
 
         String databaseDir = args[0];
+        if (!databaseDir.endsWith("/")) {
+            databaseDir += "/";
+        }
         String inputFile = args[1];
         String outputFile = args[2];
 
