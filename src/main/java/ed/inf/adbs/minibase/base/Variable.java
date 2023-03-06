@@ -1,7 +1,7 @@
 package ed.inf.adbs.minibase.base;
 
 public class Variable extends Term {
-    private String name;
+    private final String name;
 
     public Variable(String name) {
         this.name = name;

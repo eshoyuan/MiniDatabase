@@ -2,11 +2,11 @@ package ed.inf.adbs.minibase.base;
 
 public class ComparisonAtom extends Atom {
 
-    private Term term1;
+    private final Term term1;
 
-    private Term term2;
+    private final Term term2;
 
-    private ComparisonOperator op;
+    private final ComparisonOperator op;
 
     public ComparisonAtom(Term term1, Term term2, ComparisonOperator op) {
         this.term1 = term1;

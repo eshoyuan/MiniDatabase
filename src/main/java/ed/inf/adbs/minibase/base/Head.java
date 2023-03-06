@@ -6,11 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Head {
-    private String name;
+    private final String name;
 
-    private List<Variable> variables;
+    private final List<Variable> variables;
 
-    private SumAggregate agg;
+    private final SumAggregate agg;
 
     public Head(String name, List<Variable> variables, SumAggregate agg) {
         this.name = name;

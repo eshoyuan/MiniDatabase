@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Query {
-    private Head head;
+    private final Head head;
 
-    private List<Atom> body;
+    private final List<Atom> body;
 
     public Query(Head head, List<Atom> body) {
         this.head = head;

@@ -56,8 +56,8 @@ public class DatabaseCatalog {
 
     private static DatabaseCatalog instance = null;
 
-    private HashMap<String, String[]> relationSchemas;
-    private HashMap<String, String> relation2DataFiles;
+    private final HashMap<String, String[]> relationSchemas;
+    private final HashMap<String, String> relation2DataFiles;
 
     private DatabaseCatalog(String dataDir) {
         relationSchemas = new HashMap<>();
@@ -70,9 +70,7 @@ public class DatabaseCatalog {
                     String[] parts = line.split("\\s+");
                     String relationName = parts[0];
                     String[] schema = new String[parts.length - 1];
-                    for (int i = 1; i < parts.length; i++) {
-                        schema[i - 1] = parts[i];
-                    }
+                    System.arraycopy(parts, 1, schema, 0, parts.length - 1);
                     relationSchemas.put(relationName, schema);
                     relation2DataFiles.put(relationName, dataDir + "files/" + relationName + ".csv");
                 }

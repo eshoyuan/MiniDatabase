@@ -4,32 +4,25 @@ import ed.inf.adbs.minibase.base.*;
 import ed.inf.adbs.minibase.parser.QueryParser;
 import org.junit.Test;
 
-import java.nio.file.Paths;
-import java.util.*;
-
-import static ed.inf.adbs.minibase.base.ComparisonOperator.EQ;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static org.junit.Assert.*;
 
 /**
  * Unit test for Minibase.
  */
-
 public class MinibaseTest {
-
     /**
      * Rigorous Test :-)
-     */
-
-    /**
-     * Sort the body of a query to make it easier to compare
      */
     public static List<String> sortedBody(String path) throws IOException {
         Path file = Paths.get(path);
@@ -115,13 +108,13 @@ public class MinibaseTest {
         ScanOperator scanOperator = new ScanOperator("data/evaluation/db/", query);
         Tuple t = scanOperator.getNextTuple();
         while (t != null) {
-            System.out.println(t.toString());
+            System.out.println(t);
             t = scanOperator.getNextTuple();
         }
         scanOperator.reset();
         t = scanOperator.getNextTuple();
         while (t != null) {
-            System.out.println(t.toString());
+            System.out.println(t);
             t = scanOperator.getNextTuple();
         }
     }
@@ -131,13 +124,13 @@ public class MinibaseTest {
         SelectOperator selectOperator = new SelectOperator("data/evaluation/db/", query);
         Tuple t = selectOperator.getNextTuple();
         while (t != null) {
-            System.out.println(t.toString());
+            System.out.println(t);
             t = selectOperator.getNextTuple();
         }
         selectOperator.reset();
         t = selectOperator.getNextTuple();
         while (t != null) {
-            System.out.println(t.toString());
+            System.out.println(t);
             t = selectOperator.getNextTuple();
         }
     }

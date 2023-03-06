@@ -5,9 +5,9 @@ import ed.inf.adbs.minibase.Utils;
 import java.util.List;
 
 public class RelationalAtom extends Atom {
-    private String name;
+    private final String name;
 
-    private List<Term> terms;
+    private final List<Term> terms;
 
     public RelationalAtom(String name, List<Term> terms) {
         this.name = name;

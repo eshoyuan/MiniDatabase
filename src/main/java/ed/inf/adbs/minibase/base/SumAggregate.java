@@ -6,7 +6,7 @@ import java.util.List;
 
 public class SumAggregate extends Term {
 
-    private List<Term> productTerms;
+    private final List<Term> productTerms;
 
     public SumAggregate(List<Term> terms) {
         this.productTerms = terms;

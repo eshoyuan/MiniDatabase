@@ -1,7 +1,7 @@
 package ed.inf.adbs.minibase.base;
 
 public class Tuple {
-    private Object[] values;
+    private final Object[] values;
 
     public Tuple(String tupleString) {
         String[] stringValues = tupleString.split(", ");

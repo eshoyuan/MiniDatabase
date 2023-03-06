@@ -1,7 +1,7 @@
 package ed.inf.adbs.minibase.base;
 
 public class StringConstant extends Constant {
-    private String value;
+    private final String value;
 
     public StringConstant(String value) {
         this.value = value;
