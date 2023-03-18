@@ -3,6 +3,8 @@ package ed.inf.adbs.minibase.base;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class ScanOperator extends Operator {
@@ -10,6 +12,10 @@ public class ScanOperator extends Operator {
     private final String dbPath;
     private Scanner scanner;
 
+    private List<Term> returnVariables = new ArrayList<>();
+    public List<Term> getReturnVariables() {
+        return returnVariables;
+    }
     public ScanOperator(String dbPath, Query query) {
         this.relationName = ((RelationalAtom) query.getBody().get(0)).getName();
         this.dbPath = dbPath;
@@ -18,6 +24,7 @@ public class ScanOperator extends Operator {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+        returnVariables = ((RelationalAtom) query.getBody().get(0)).getTerms();
     }
 
     @Override

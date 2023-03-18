@@ -15,13 +15,23 @@ public class Tuple {
             }
         }
     }
-
+    public Tuple(Tuple tuple) {
+        this.values = new Object[tuple.values.length];
+        System.arraycopy(tuple.values, 0, this.values, 0, tuple.values.length);
+    }
     public Tuple(Object[] values) {
         this.values = values;
     }
 
     public Object get(int index) {
         return values[index];
+    }
+
+    public Tuple concat(Tuple tuple) {
+        Object[] newValues = new Object[values.length + tuple.values.length];
+        System.arraycopy(values, 0, newValues, 0, values.length);
+        System.arraycopy(tuple.values, 0, newValues, values.length, tuple.values.length);
+        return new Tuple(newValues);
     }
 
 

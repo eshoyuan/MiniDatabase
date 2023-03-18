@@ -1,6 +1,7 @@
 package ed.inf.adbs.minibase.base;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProjectOperator extends Operator {
@@ -21,6 +22,12 @@ public class ProjectOperator extends Operator {
         this.bodyVariables = ((RelationalAtom) query.getBody().get(0)).getTerms();
     }
 
+    public ProjectOperator(Operator child, Object[] headVariables, List<Term> bodyVariables) {
+        this.child = child;
+        this.headVariables = new Object[headVariables.length];
+        System.arraycopy(headVariables, 0, this.headVariables, 0, headVariables.length);
+        this.bodyVariables = new ArrayList<>(bodyVariables);
+    }
     @Override
     public Tuple getNextTuple() throws IOException {
         Tuple tuple = child.getNextTuple();

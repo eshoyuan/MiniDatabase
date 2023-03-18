@@ -12,10 +12,17 @@ public class SelectOperator extends Operator {
     private final List<ComparisonAtom> comparisonAtoms = new ArrayList<>();
     private final RelationalAtom relationalAtom;
 
-
+    public List<Term> getReturnVariables() {
+        return ((ScanOperator) child).getReturnVariables();
+    }
+    public SelectOperator(Operator child, List<ComparisonAtom> comparisonAtoms, RelationalAtom relationalAtom) {
+        this.child = child;
+        this.comparisonAtoms.addAll(comparisonAtoms);
+        this.relationalAtom = relationalAtom;
+    }
     public SelectOperator(String dbPath, Query query) {
         this.child = new ScanOperator(dbPath, query);
-        // extrack ComparisonAtom in query's body
+        // extract ComparisonAtom in query's body
         for (Atom atom : query.getBody()) {
             if (atom instanceof ComparisonAtom) {
                 comparisonAtoms.add((ComparisonAtom) atom);

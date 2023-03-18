@@ -153,5 +153,26 @@ public class MinibaseTest {
             t = projectOperator.getNextTuple();
         }
     }
+
+    @Test
+    public void testJoinOperator() throws Exception {
+//        Query query2 = QueryParser.parse(Paths.get("data/evaluation/input/query_join1.txt"));
+//        Query query1 = QueryParser.parse(Paths.get("data/evaluation/input/query_join2.txt"));
+//        List<ComparisonAtom> joinConditions = new ArrayList<>();
+//        joinConditions.add(new ComparisonAtom(new Variable("x"), new Variable("j"), ComparisonOperator.EQ));
+//        JoinOperator joinOperator = new JoinOperator("data/evaluation/db/", query1, query2, joinConditions);
+//        Tuple t = joinOperator.getNextTuple();
+//        while (t != null) {
+//            System.out.println(t);
+//            t = joinOperator.getNextTuple();
+//        }
+        Query query = QueryParser.parse(Paths.get("data/evaluation/input/query6.txt"));
+        JoinOperator joinOperator = new JoinOperator("data/evaluation/db/", query);
+        Tuple t = joinOperator.getNextTuple();
+        while (t != null) {
+            System.out.println(t);
+            t = joinOperator.getNextTuple();
+        }
+    }
 }
 
