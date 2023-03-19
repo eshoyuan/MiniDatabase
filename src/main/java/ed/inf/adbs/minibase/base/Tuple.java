@@ -41,7 +41,13 @@ public class Tuple {
     public String toString() {
         StringBuilder sb = new StringBuilder("(");
         for (int i = 0; i < values.length; i++) {
+            if (values[i] instanceof String) {
+                sb.append("'");
+            }
             sb.append(values[i]);
+            if (values[i] instanceof String) {
+                sb.append("'");
+            }
             if (i < values.length - 1) {
                 sb.append(", ");
             }

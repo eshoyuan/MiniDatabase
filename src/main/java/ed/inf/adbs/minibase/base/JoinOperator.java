@@ -149,7 +149,7 @@ public class JoinOperator extends Operator {
 //        this.leftChild = beforeJoinOperator;
 //        this.rightChild = new JoinOperator(dbPath, beforeJoinOperator, new Query(head2, body2), joinAtoms);
         List<Variable> headVariables = query.getHead().getVariables();
-        if (query.getHead().getSumAggregate().getProductTerms().size() != 0) {
+        if (query.getHead().getSumAggregate()!=null){
             for (Term productTerm : query.getHead().getSumAggregate().getProductTerms()) {
                    if (!headVariables.contains(productTerm)) {
                        if (productTerm instanceof Variable) {

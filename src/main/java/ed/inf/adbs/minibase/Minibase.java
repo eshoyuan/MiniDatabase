@@ -1,10 +1,10 @@
 package ed.inf.adbs.minibase;
 
-import ed.inf.adbs.minibase.base.Atom;
-import ed.inf.adbs.minibase.base.Query;
-import ed.inf.adbs.minibase.base.Head;
+import ed.inf.adbs.minibase.base.*;
 import ed.inf.adbs.minibase.parser.QueryParser;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
 
@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class Minibase {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
         if (args.length != 3) {
             System.err.println("Usage: Minibase database_dir input_file output_file");
@@ -28,13 +28,42 @@ public class Minibase {
         String inputFile = args[1];
         String outputFile = args[2];
 
-//        evaluateCQ(databaseDir, inputFile, outputFile);
+        evaluateCQ(databaseDir, inputFile, outputFile);
 
         parsingExample(inputFile);
     }
 
-    public static void evaluateCQ(String databaseDir, String inputFile, String outputFile) {
+    public static void evaluateCQ(String databaseDir, String inputFile, String outputFile) throws IOException {
         // TODO: add your implementation
+        if (!databaseDir.endsWith("/")) {
+            databaseDir += "/";
+        }
+        Query query = QueryParser.parse(Paths.get(inputFile));
+        Operator operator;
+        if (query.getHead().getSumAggregate()!=null) {
+            operator = new SumOperator(databaseDir, query);
+        }
+        else {
+            Integer numOfRelationAtoms = 0;
+            for (Atom atom : query.getBody()) {
+                if (atom instanceof RelationalAtom) {
+                    numOfRelationAtoms++;
+                }
+            }
+            if (numOfRelationAtoms == 1) {
+                operator = new ProjectOperator(databaseDir, query);
+            }
+            else {
+                operator = new JoinOperator(databaseDir, query);
+            }
+        }
+        Tuple tuple = operator.getNextTuple();
+        FileWriter writer = new FileWriter(outputFile);
+        while (tuple != null) {
+            writer.write(tuple.toString().substring(1, tuple.toString().length() - 1)+ "\n");
+            tuple = operator.getNextTuple();
+        }
+        writer.close();
     }
 
     /**

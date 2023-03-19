@@ -8,10 +8,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,6 +21,13 @@ public class MinibaseTest {
     /**
      * Rigorous Test :-)
      */
+    private boolean compareFiles(String file1, String file2) throws IOException {
+        Path path1 = Paths.get(file1);
+        Path path2 = Paths.get(file2);
+        byte[] content1 = Files.readAllBytes(path1);
+        byte[] content2 = Files.readAllBytes(path2);
+        return Arrays.equals(content1, content2);
+    }
     public static List<String> sortedBody(String path) throws IOException {
         Path file = Paths.get(path);
         String content = new String(Files.readAllBytes(file));
@@ -200,6 +204,35 @@ public class MinibaseTest {
         }
     }
 
+    @Test
+    public void testEvaluateCQ () throws Exception {
+//        Minibase.evaluateCQ("data/evaluation/db", "data/evaluation/input/query1.txt", "data/evaluation/output/query1.csv");
+//        assertTrue(compareFiles("data/evaluation/output/query1.csv", "data/evaluation/expected_output/query1.csv"));
+//
+//        Minibase.evaluateCQ("data/evaluation/db", "data/evaluation/input/query2.txt", "data/evaluation/output/query2.csv");
+//        assertTrue(compareFiles("data/evaluation/output/query2.csv", "data/evaluation/expected_output/query2.csv"));
+//
+//        Minibase.evaluateCQ("data/evaluation/db", "data/evaluation/input/query3.txt", "data/evaluation/output/query3.csv");
+//        assertTrue(compareFiles("data/evaluation/output/query3.csv", "data/evaluation/expected_output/query3.csv"));
+//
+//        Minibase.evaluateCQ("data/evaluation/db", "data/evaluation/input/query4.txt", "data/evaluation/output/query4.csv");
+//        assertTrue(compareFiles("data/evaluation/output/query4.csv", "data/evaluation/expected_output/query4.csv"));
+//
+//        Minibase.evaluateCQ("data/evaluation/db", "data/evaluation/input/query5.txt", "data/evaluation/output/query5.csv");
+//        assertTrue(compareFiles("data/evaluation/output/query5.csv", "data/evaluation/expected_output/query5.csv"));
+//
+//        Minibase.evaluateCQ("data/evaluation/db", "data/evaluation/input/query6.txt", "data/evaluation/output/query6.csv");
+//        assertTrue(compareFiles("data/evaluation/output/query6.csv", "data/evaluation/expected_output/query6.csv"));
+//
+//        Minibase.evaluateCQ("data/evaluation/db", "data/evaluation/input/query7.txt", "data/evaluation/output/query7.csv");
+//        assertTrue(compareFiles("data/evaluation/output/query7.csv", "data/evaluation/expected_output/query7.csv"));
+//
+//        Minibase.evaluateCQ("data/evaluation/db", "data/evaluation/input/query8.txt", "data/evaluation/output/query8.csv");
+//        assertTrue(compareFiles("data/evaluation/output/query8.csv", "data/evaluation/expected_output/query8.csv"));
+
+        Minibase.evaluateCQ("data/evaluation/db", "data/evaluation/input/query9.txt", "data/evaluation/output/query9.csv");
+        assertTrue(compareFiles("data/evaluation/output/query9.csv", "data/evaluation/expected_output/query9.csv"));
+    }
 
 }
 

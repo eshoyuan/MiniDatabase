@@ -22,7 +22,7 @@ public class SumOperator extends Operator {
                 numOfRelationAtoms++;
             }
         }
-        Term headVariable = query.getHead().getSumAggregate().getProductTerms().get(0);
+        // Term headVariable = query.getHead().getSumAggregate().getProductTerms().get(0);
 
         if (numOfRelationAtoms == 1) {
             this.child = new ProjectOperator(dbPath, query);
@@ -70,7 +70,7 @@ public class SumOperator extends Operator {
                         int product1 = 0;
                         if (t.equals(t1)) {
                             for (int i = 0; i < headAggregateVariables.size(); i++) {
-                                if (i == 1) {
+                                if (i == 0) {
                                     if (headAggregateVariables.get(i) instanceof Constant)
                                         product1 = (int) ((IntegerConstant) headAggregateVariables.get(i)).getValue();
                                     else
