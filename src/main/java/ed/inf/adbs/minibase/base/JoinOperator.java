@@ -14,8 +14,6 @@ public class JoinOperator extends Operator {
     private Operator leftChild = null;
     private Operator rightChild = null;
     private Operator projectChild = null;
-    private Query query;
-    private String dbPath;
     private List<ComparisonAtom> selectionAtoms = new ArrayList<>();
     private List<ComparisonAtom> joinAtoms = new ArrayList<>();
     private final List<RelationalAtom> relationalAtoms = new ArrayList<>();
@@ -145,11 +143,23 @@ public class JoinOperator extends Operator {
                 beforeJoinOperator = new JoinOperator(dbPath, new JoinOperator(beforeJoinOperator), new Query(head2, body2), joinAtoms);
             }
         }
-        List<Term> bodyVariables = beforeJoinOperator.leftChild.getReturnVariables();
+        List<Term> bodyVariables =new ArrayList<>();
+        bodyVariables.addAll(beforeJoinOperator.leftChild.getReturnVariables());
         bodyVariables.addAll(beforeJoinOperator.rightChild.getReturnVariables());
 //        this.leftChild = beforeJoinOperator;
 //        this.rightChild = new JoinOperator(dbPath, beforeJoinOperator, new Query(head2, body2), joinAtoms);
-        this.projectChild  = new ProjectOperator(beforeJoinOperator, query.getHead().getVariables().toArray(),bodyVariables);
+        List<Variable> headVariables = query.getHead().getVariables();
+        if (query.getHead().getSumAggregate().getProductTerms().size() != 0) {
+            for (Term productTerm : query.getHead().getSumAggregate().getProductTerms()) {
+                   if (!headVariables.contains(productTerm)) {
+                       if (productTerm instanceof Variable) {
+                           headVariables.add((Variable) productTerm);
+                       }
+                }
+            }
+        }
+        Object[] headVariablesArray = headVariables.toArray();
+        this.projectChild  = new ProjectOperator(beforeJoinOperator, headVariablesArray,bodyVariables);
     }
 
     public JoinOperator(String dbPath, Query leftQuery, Query rightQuery, List<ComparisonAtom> joinAtoms) {
@@ -219,10 +229,59 @@ public class JoinOperator extends Operator {
         }
         return null;
     }
+    public Tuple nonDistinctGetNextTuple() throws IOException {
+        if (projectChild != null){
+            return ((ProjectOperator) projectChild).nonDistinctGetNextTuple();
+        }
 
+        List<Term> leftVariables = null;
+        List<Term> rightVariables = null;
+        if (leftChild instanceof JoinOperator){
+            leftVariables = ((JoinOperator) leftChild).getReturnVariables();
+        } else if (leftChild instanceof SelectOperator) {
+            leftVariables = ((SelectOperator) leftChild).getReturnVariables();
+        }
+        else if (leftChild instanceof ScanOperator) {
+            leftVariables = ((ScanOperator) leftChild).getReturnVariables();
+        }
+
+        if (rightChild instanceof SelectOperator){
+            rightVariables = ((SelectOperator) rightChild).getReturnVariables();
+        }
+        else if (rightChild instanceof ScanOperator) {
+            rightVariables = ((ScanOperator) rightChild).getReturnVariables();
+        }
+        if (leftTuple == null) {
+            leftTuple = leftChild.getNextTuple();
+        }
+        while (leftTuple != null) {
+            // rightChild.reset();
+            Tuple rightTuple = rightChild.getNextTuple();
+            while (rightTuple != null) {
+
+                if (compare(leftTuple, rightTuple, joinAtoms, leftVariables, rightVariables)) {
+//                    return merge(leftTuple, rightTuple);
+                    return new Tuple(leftTuple.concat(rightTuple));
+                }
+                rightTuple = rightChild.getNextTuple();
+            }
+            leftTuple = leftChild.getNextTuple();
+            rightChild.reset();
+        }
+        return null;
+    }
     @Override
     public void reset() {
-
+        if (projectChild != null){
+            projectChild.reset();
+        }
+        if (leftChild != null){
+            leftChild.reset();
+        }
+        if (rightChild != null){
+            rightChild.reset();
+        }
+        leftTuple = null;
     }
 
     public boolean compare(Tuple leftTuple, Tuple rightTuple, List<ComparisonAtom> joinAtoms, List<Term> leftVariables, List<Term> rightVariables) {

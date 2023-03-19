@@ -173,6 +173,33 @@ public class MinibaseTest {
             System.out.println(t);
             t = joinOperator.getNextTuple();
         }
+        System.out.println("\n");
+        joinOperator.reset();
+        t = joinOperator.getNextTuple();
+        while (t != null) {
+            System.out.println(t);
+            t = joinOperator.getNextTuple();
+        }
     }
+
+    @Test
+    public void testSumOperator() throws Exception {
+        Query query = QueryParser.parse(Paths.get("data/evaluation/input/query8.txt"));
+        SumOperator sumOperator = new SumOperator("data/evaluation/db/", query);
+        Tuple t = sumOperator.getNextTuple();
+        while (t != null) {
+            System.out.println(t);
+            t = sumOperator.getNextTuple();
+        }
+        System.out.println("\n");
+        sumOperator.reset();
+        t = sumOperator.getNextTuple();
+        while (t != null) {
+            System.out.println(t);
+            t = sumOperator.getNextTuple();
+        }
+    }
+
+
 }
 

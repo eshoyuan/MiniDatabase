@@ -2,13 +2,15 @@ package ed.inf.adbs.minibase.base;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 public class ProjectOperator extends Operator {
     private Operator child = null;
     private final Object[] headVariables;
     private final List<Term> bodyVariables;
-
+    private HashSet<Tuple> output = new HashSet<>();
     public ProjectOperator(String dbPath, Query query) {
         for (Atom atom : query.getBody()) {
             if (atom instanceof ComparisonAtom) {
@@ -38,12 +40,26 @@ public class ProjectOperator extends Operator {
         for (int i = 0; i < headVariables.length; i++) {
             projectValues[i] = tuple.get(bodyVariables.indexOf(headVariables[i]));
         }
-
+        if (output.contains(new Tuple(projectValues))) {
+            return getNextTuple();
+        }
+        output.add(new Tuple(projectValues));
         return new Tuple(projectValues);
     }
-
+    public Tuple nonDistinctGetNextTuple() throws IOException {
+        Tuple tuple = child.getNextTuple();
+        if (tuple == null) {
+            return null;
+        }
+        Object[] projectValues = new Object[headVariables.length];
+        for (int i = 0; i < headVariables.length; i++) {
+            projectValues[i] = tuple.get(bodyVariables.indexOf(headVariables[i]));
+        }
+        return new Tuple(projectValues);
+    }
     @Override
     public void reset() {
         child.reset();
+        output.clear();
     }
 }

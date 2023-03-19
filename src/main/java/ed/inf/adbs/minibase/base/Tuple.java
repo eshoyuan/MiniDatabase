@@ -1,5 +1,7 @@
 package ed.inf.adbs.minibase.base;
 
+import java.util.Arrays;
+
 public class Tuple {
     private final Object[] values;
 
@@ -46,5 +48,22 @@ public class Tuple {
         }
         sb.append(")");
         return sb.toString();
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(values);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        Tuple other = (Tuple) obj;
+        return Arrays.equals(values, other.values);
     }
 }
