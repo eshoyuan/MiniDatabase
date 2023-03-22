@@ -2,11 +2,18 @@ package ed.inf.adbs.minibase.base;
 
 import java.util.Random;
 
+/**
+ * RandomName is a utility class for generating random names.
+ */
 public class RandomName {
     private static final String ALLOWED_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
-    public static String generate()
-    {
+    /**
+     * Generates a random name.
+     *
+     * @return the random name
+     */
+    public static String generate() {
         int length = 5;
         StringBuilder sb = new StringBuilder(length);
         Random random = new Random();

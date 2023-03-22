@@ -24,6 +24,7 @@ public class Variable extends Term {
         }
         return false;
     }
+
     @Override
     public int hashCode() {
         return name.hashCode();

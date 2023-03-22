@@ -6,20 +6,25 @@ import java.util.List;
 
 import static ed.inf.adbs.minibase.base.ComparisonOperator.EQ;
 
+/**
+ * SelectOperator is the operator that selects the tuples from the child operator.
+ * We use ScanOperator as the child operator.
+ * We first transform the constant in the RelationAtom to a ComparisonAtom.
+ * The SelectOperator will compare the tuple with the ComparisonAtom in the query's body.
+ * If the tuple satisfies the ComparisonAtom, then the tuple will be returned.
+ */
 public class SelectOperator extends Operator {
 
     private final Operator child;
     private final List<ComparisonAtom> comparisonAtoms = new ArrayList<>();
     private final RelationalAtom relationalAtom;
 
-    public List<Term> getReturnVariables() {
-        return ((ScanOperator) child).getReturnVariables();
-    }
-    public SelectOperator(Operator child, List<ComparisonAtom> comparisonAtoms, RelationalAtom relationalAtom) {
-        this.child = child;
-        this.comparisonAtoms.addAll(comparisonAtoms);
-        this.relationalAtom = relationalAtom;
-    }
+    /**
+     * Constructor of SelectOperator
+     *
+     * @param dbPath the path of the database
+     * @param query  the query
+     */
     public SelectOperator(String dbPath, Query query) {
         this.child = new ScanOperator(dbPath, query);
         // extract ComparisonAtom in query's body
@@ -43,6 +48,18 @@ public class SelectOperator extends Operator {
         relationalAtom = (RelationalAtom) query.getBody().get(0);
     }
 
+    /**
+     * @return the list of variables that are returned by the operator
+     */
+    public List<Term> getReturnVariables() {
+        return child.getReturnVariables();
+    }
+
+    /**
+     * Function to get the next tuple
+     *
+     * @return the next tuple
+     */
     @Override
     public Tuple getNextTuple() throws IOException {
         Tuple tuple = child.getNextTuple();
@@ -55,11 +72,22 @@ public class SelectOperator extends Operator {
         return null;
     }
 
+    /**
+     * Function to reset the operator by resetting the child operator
+     */
     @Override
     public void reset() {
         child.reset();
     }
 
+    /**
+     * Function to check if the tuple satisfies all the ComparisonAtom
+     *
+     * @param tuple          the tuple to be compared
+     * @param atoms          the list of ComparisonAtom
+     * @param relationalAtom the RelationalAtom
+     * @return true if the tuple satisfies all the ComparisonAtom
+     */
     public boolean compare(Tuple tuple, List<ComparisonAtom> atoms, RelationalAtom relationalAtom) {
         for (ComparisonAtom atom : atoms) {
             if (!singleCompare(tuple, atom, relationalAtom)) {
@@ -69,6 +97,14 @@ public class SelectOperator extends Operator {
         return true;
     }
 
+    /**
+     * Function to check if the tuple satisfies a single ComparisonAtom
+     *
+     * @param tuple          the tuple to be compared
+     * @param atom           the ComparisonAtom
+     * @param relationalAtom the RelationalAtom
+     * @return true if the tuple satisfies the ComparisonAtom
+     */
     public boolean singleCompare(Tuple tuple, ComparisonAtom atom, RelationalAtom relationalAtom) {
         ComparisonOperator op = atom.getOp();
         Term term1 = atom.getTerm1();
@@ -106,13 +142,20 @@ public class SelectOperator extends Operator {
         }
     }
 
+    /**
+     * Function to get the value of a Term
+     *
+     * @param tuple          the tuple to be compared
+     * @param relationalAtom the RelationalAtom
+     * @param term           the Term
+     * @return the value of the Term
+     */
     private Object term2value(Tuple tuple, RelationalAtom relationalAtom, Term term) {
         if (term instanceof IntegerConstant) {
             return ((IntegerConstant) term).getValue();
         } else if (term instanceof StringConstant) {
             return ((StringConstant) term).getValue();
         } else if (term instanceof Variable) {
-
             Integer index = relationalAtom.getTerms().indexOf(term);
             return tuple.get(index);
         }

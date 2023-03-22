@@ -37,6 +37,8 @@ public class CQMinimizer {
      * <p>
      * Assume the body of the query from inputFile has no comparison atoms
      * but could potentially have constants in its relational atoms.
+     * @param inputFile the input file
+     * @param outputFile the output file
      */
     public static void minimizeCQ(String inputFile, String outputFile) {
 
@@ -48,7 +50,6 @@ public class CQMinimizer {
             while (changed) {
                 // try to remove an atom from body
                 Query removed_query = removeAtom(query);
-
                 // if no atom can be removed, stop the loop
                 if (removed_query.toString().equals(query.toString())) {
                     changed = false;
@@ -56,7 +57,6 @@ public class CQMinimizer {
                     query = new Query(removed_query);
                 }
             }
-
 
             FileWriter writer = new FileWriter(outputFile);
             writer.write(query.toString());
@@ -72,6 +72,10 @@ public class CQMinimizer {
 
     /**
      * Function to remove an atom from body, if no atom can be removed, return the original query.
+     * We check every atom in the body, if the atom can be removed, we check if the two queries are homomorphism.
+     *
+     * @param query the original query
+     * @return the query after removing an atom
      */
     public static Query removeAtom(Query query) {
         for (int i = 0; i < query.getBody().size(); i++) {
@@ -86,7 +90,14 @@ public class CQMinimizer {
     }
 
     /**
-     * Function to check if two queries are homomorphism.
+     * Function to check if two queries are homomorphism
+     * We try to map the variables in the head of query1 to the variables in the head of query2.
+     * If the mapping is correct, the two queries are homomorphism.
+     *
+     * @param query1  the original query
+     * @param query2  the query after removing an atom
+     * @param mapping the mapping of variables in query1 to variables in query2
+     * @return true if the two queries are homomorphism, false otherwise
      */
     public static boolean check_Homomorphism(Query query1, Query query2, HashMap<String, String> mapping) {
         if (query1.getBody().size() == 0) {
@@ -152,14 +163,10 @@ public class CQMinimizer {
      * Reads CQ from a file and prints it to screen, then extracts Head and Body
      * from the query and prints them to screen.
      */
-
     public static void parsingExample(String filename) {
 
         try {
             Query query = QueryParser.parse(Paths.get(filename));
-            // Query query = QueryParser.parse("Q(x, y) :- R(x, z), S(y, z, w)");
-            // Query query = QueryParser.parse("Q(x) :- R(x, 'z'), S(4, z, w)");
-
             System.out.println("Entire query: " + query);
             Head head = query.getHead();
             System.out.println("Head: " + head);
@@ -170,6 +177,4 @@ public class CQMinimizer {
             e.printStackTrace();
         }
     }
-
-
 }

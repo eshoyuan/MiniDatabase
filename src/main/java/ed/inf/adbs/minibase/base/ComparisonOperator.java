@@ -17,15 +17,15 @@ public enum ComparisonOperator {
         this.text = text;
     }
 
-    @Override
-    public String toString() {
-        return text;
-    }
-
     public static ComparisonOperator fromString(String s) throws NoSuchElementException {
         return Arrays.stream(values())
                 .filter(op -> op.text.equalsIgnoreCase(s))
                 .findFirst().get();
+    }
+
+    @Override
+    public String toString() {
+        return text;
     }
 
 }

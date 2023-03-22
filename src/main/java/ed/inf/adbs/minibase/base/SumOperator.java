@@ -5,16 +5,25 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+/**
+ * SumOperator is the operator that implements the sum aggregate.
+ * We first use ProjectOperator or JoinOperator to get all the tuples.
+ * Then we use a HashSet to store the group of tuples.
+ * We use a List to store the output after sum.
+ */
 public class SumOperator extends Operator {
 
-    private Operator child;
+    private final Operator child;
+    private final List<Tuple> output = new ArrayList<>();
+    private final List<Tuple> outputAfterSum = new ArrayList<>(); // output after sum
+    private final HashSet<Tuple> outputGroup = new HashSet<>(); // To store the group of tuples
+    private Integer outputIndex = 0; // Index of the output, used for getNextTuple()
 
-    private List<Tuple> output = new ArrayList<>();
-    private List<Tuple> outputAfterSum = new ArrayList<>();
-    private Integer outputIndex = 0;
-    private HashSet<Tuple> outputGroup = new HashSet<>();
-
-
+    /**
+     * Constructs a SumOperator.
+     * @param dbPath the path to the database
+     * @param query  the query
+     */
     public SumOperator(String dbPath, Query query) throws IOException {
         Integer numOfRelationAtoms = 0;
         for (Atom atom : query.getBody()) {
@@ -22,8 +31,8 @@ public class SumOperator extends Operator {
                 numOfRelationAtoms++;
             }
         }
-        // Term headVariable = query.getHead().getSumAggregate().getProductTerms().get(0);
-
+        // If there is only one relation atom, use ProjectOperator
+        // Do nonDistinctGetNextTuple() to get all the tuples
         if (numOfRelationAtoms == 1) {
             this.child = new ProjectOperator(dbPath, query);
             Tuple tuple = ((ProjectOperator) this.child).nonDistinctGetNextTuple();
@@ -67,17 +76,18 @@ public class SumOperator extends Operator {
                             tupleValues1[i] = tuple1.get(headVariables.indexOf(nonAggregateVariables.get(i)));
                         }
                         Tuple t1 = new Tuple(tupleValues1);
+                        // Get the product of the aggregate variables
                         int product1 = 0;
                         if (t.equals(t1)) {
                             for (int i = 0; i < headAggregateVariables.size(); i++) {
                                 if (i == 0) {
                                     if (headAggregateVariables.get(i) instanceof Constant)
-                                        product1 = (int) ((IntegerConstant) headAggregateVariables.get(i)).getValue();
+                                        product1 = ((IntegerConstant) headAggregateVariables.get(i)).getValue();
                                     else
                                         product1 = (int) tuple.get(headVariables.indexOf(headAggregateVariables.get(i)));
                                 } else {
                                     if (headAggregateVariables.get(i) instanceof Constant)
-                                        product1 = (int) ((IntegerConstant) headAggregateVariables.get(i)).getValue() * product1;
+                                        product1 = ((IntegerConstant) headAggregateVariables.get(i)).getValue() * product1;
                                     else
                                         product1 = (int) tuple.get(headVariables.indexOf(headAggregateVariables.get(i))) * product1;
                                 }
@@ -100,14 +110,13 @@ public class SumOperator extends Operator {
                     for (int i = 0; i < headAggregateVariables.size(); i++) {
                         if (i == 0) {
                             if (headAggregateVariables.get(i) instanceof Constant) {
-                                product1 = (int) ((IntegerConstant) headAggregateVariables.get(i)).getValue();
+                                product1 = ((IntegerConstant) headAggregateVariables.get(i)).getValue();
                             } else {
                                 product1 = (int) tuple.get(headVariables.indexOf(headAggregateVariables.get(i)));
                             }
                         } else {
                             if (headAggregateVariables.get(i) instanceof Constant) {
-                                product1 = (int) ((IntegerConstant) headAggregateVariables.get(i)).getValue() * product1;
-                                ;
+                                product1 = ((IntegerConstant) headAggregateVariables.get(i)).getValue() * product1;
                             } else {
                                 product1 = (int) tuple.get(headVariables.indexOf(headAggregateVariables.get(i))) * product1;
                             }
@@ -124,6 +133,10 @@ public class SumOperator extends Operator {
 
     }
 
+    /**
+     * Returns the next tuple in the output after sum.
+     * @return the next tuple in the output after sum
+     */
     @Override
     public Tuple getNextTuple() throws IOException {
         if (outputIndex < outputAfterSum.size()) {
@@ -133,6 +146,9 @@ public class SumOperator extends Operator {
 
     }
 
+    /**
+     * Resets the output index.
+     */
     @Override
     public void reset() {
         outputIndex = 0;

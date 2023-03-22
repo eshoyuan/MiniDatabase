@@ -2,9 +2,7 @@ package ed.inf.adbs.minibase.base;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Scanner;
 
 //public class DatabaseCatalog {

@@ -19,6 +19,7 @@ public class Query {
         this.head = new Head(query.getHead());
         this.body = new ArrayList<>(query.getBody());
     }
+
     public Head getHead() {
         return head;
     }
