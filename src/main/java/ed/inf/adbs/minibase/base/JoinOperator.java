@@ -68,6 +68,11 @@ public class JoinOperator extends Operator {
         for (Atom atom : query.getBody()) {
             if (atom instanceof RelationalAtom) {
                 for (int i = 0; i < ((RelationalAtom) atom).getTerms().size(); i++) {
+                    if (((RelationalAtom) atom).getTerms().get(i) instanceof Constant) {
+                        String newVar = RandomName.generate();
+                        selectionAtoms.add(new ComparisonAtom(((RelationalAtom) atom).getTerms().get(i), new Variable(newVar), EQ));
+                        ((RelationalAtom) atom).getTerms().set(i, new Variable(newVar));
+                    }
                     if (appearedVariables.contains(((RelationalAtom) atom).getTerms().get(i))) {
                         String newVar = RandomName.generate();
                         joinAtoms.add(new ComparisonAtom(((RelationalAtom) atom).getTerms().get(i), new Variable(newVar), EQ));
